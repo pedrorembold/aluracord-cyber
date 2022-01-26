@@ -35,7 +35,7 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
     //const username = 'peas';
-    const [username, setUsername] = React.useState('omariosouto');
+    const [username, setUsername] = React.useState('pedrorembold');
     const roteamento = useRouter();
     
 
@@ -156,6 +156,7 @@ export default function PaginaInicial() {
                             }}
                             src={`https://github.com/${username}.png`}
                         />
+                        
                         <Text
                             variant="body4"
                             styleSheet={{
@@ -166,6 +167,8 @@ export default function PaginaInicial() {
                             }}
                         >
                             {username}
+                            
+                            
                         </Text>
                     </Box>
                     {/* Photo Area */}

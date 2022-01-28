@@ -1,10 +1,30 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMyMTkyNywiZXhwIjoxOTU4ODk3OTI3fQ.0DT2vEqsz7DvMNJwZk-nX3YOZ14kbBbyyp9MlQw6X-o';
+const SUPABASE_URL = 'https://hfervnpihrgdpymgffdp.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+
 
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+
+    React.useEffect(() => {
+        supabaseClient
+            .from('MENSAGENS')
+            .select('*')
+            .order('id', {ascending: false })
+            .then(({ data }) => {
+                console.log('dados da consulta:', data);
+                setListaDeMensagens(data);
+        });
+
+    }, []);
+    
     // Usuário
     /*
     - Usuário digita no campo textarea
@@ -16,16 +36,28 @@ export default function ChatPage() {
     - onChange, usando o useState (ter if pra caso seja enter para limpar a variável) -y
     - lisa de mensagem -y
     */
+
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listaDeMensagens.length + 1,
-            de: 'omariosouto',
+            //id: listaDeMensagens.length + 1,
+            de: 'pedrorembold',
             texto: novaMensagem,
         };
-        setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens,
-        ]);
+
+        supabaseClient
+        .from('MENSAGENS')
+        .insert([
+            mensagem
+        ])
+        .then(({ data }) => {
+            setListaDeMensagens([
+                data[0],
+                ...listaDeMensagens,
+            ]);
+        });
+
+
+
         setMensagem('');
     }
 
@@ -82,6 +114,7 @@ export default function ChatPage() {
                             alignItems: 'center',
                         }}
                     >
+                        
                         <TextField
                             value={mensagem}
                             onChange={(event) => {
@@ -174,7 +207,7 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${mensagem.de}.png`}
                             />
                             <Text tag="strong">
                                 {mensagem.de}
